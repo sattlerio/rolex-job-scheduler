@@ -1,5 +1,7 @@
 package com.sattler;
 
+import com.codahale.metrics.health.HealthCheck;
+import com.sattler.health.MongoDBHealthCheck;
 import com.sattler.health.PingHealthCheck;
 import com.sattler.resources.PingResource;
 import io.dropwizard.Application;
@@ -49,8 +51,13 @@ public class rolexJobSchedulerApplication extends Application<rolexJobSchedulerC
         environment.jersey().register(pingResourceresource);
 
         final PingHealthCheck healthCheck = new PingHealthCheck("https://google.com");
+        final MongoDBHealthCheck mongoDBHealthCheck = new MongoDBHealthCheck(
+                System.getenv("MONGODB_HOST"),
+                System.getenv("MONGODB_DATABASE")
+        );
 
         environment.healthChecks().register("self Ping Check", healthCheck);
+        environment.healthChecks().register("check mongo connection", mongoDBHealthCheck);
 
 
     }

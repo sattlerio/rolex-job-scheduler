@@ -10,10 +10,10 @@ public class MongoDBHandler  {
     final Morphia morphia = new Morphia();
     final Datastore datastore;
 
-    public MongoDBHandler() throws MongoDBException {
+    public MongoDBHandler(String host, String database) throws MongoDBException {
         try {
             morphia.mapPackage("com.sattler.db.mongodb", false);
-            datastore = morphia.createDatastore(new MongoClient("0.0.0.0", 27017), "currencies");
+            datastore = morphia.createDatastore(new MongoClient(host), database);
 
             datastore.ensureIndexes();
         } catch (Exception e) {

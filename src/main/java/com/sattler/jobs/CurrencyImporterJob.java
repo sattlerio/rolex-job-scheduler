@@ -33,7 +33,8 @@ public class CurrencyImporterJob extends Job {
         log.info(String.format("Currency Importer Job just woke up with ID: %s", transaction_id));
 
         try {
-            Datastore mongo_client = new MongoDBHandler().getDatastore();
+            Datastore mongo_client = new MongoDBHandler(System.getenv("MONGODB_HOST"),
+                    System.getenv("MONGODB_DATABASE")).getDatastore();
             log.info(String.format("Curreny Importer %s: opened mongodb connection", transaction_id));
 
             OpenExchangeRate oer_client = new OpenExchangeRate(System.getenv("OPENEXCHANGE_RATE_API_KEY"));
