@@ -1,0 +1,20 @@
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /livetest
+  connector:
+    type: http
+    port: 9000
+logging:
+  level: INFO
+  loggers:
+    com.sattler: DEBUG
+sundial:
+  thread-pool-size: 10
+  shutdown-on-unload: true
+  wait-on-shutdown: false
+  start-delay-seconds: 0
+  start-scheduler-on-load: true
+  global-lock-on-load: false
+  annotated-jobs-package-name: com.sattler.jobs
+  tasks: [startjob, stopjob]
