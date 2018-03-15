@@ -13,10 +13,36 @@ public class OpenExchangeRate {
     private String api_key;
     private String oer_url = "https://openexchangerates.org/api/";
     private String oer_currency_endpoint = "currencies.json";
+    private String oer_rate_endpoint = "latest.json?app_id=";
 
     public OpenExchangeRate(String api_key) {
         this.api_key = api_key;
 
+    }
+
+    public JsonNode fetchCurrencyRates() throws IOException, OpenExchangeRateException {
+        String url = String.format("%s%s%s", this.oer_url,
+                this.oer_rate_endpoint, this.api_key);
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(url).build();
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) {
+            throw new OpenExchangeRateException(response.toString(),
+                    new Throwable(response.toString()));
+        }
+        String data = response.body().string();
+        try {
+            JsonNode node =  jsonStringToObject(data);
+            if(node.has("rates")) {
+                return node.get("rates");
+            }
+            throw new OpenExchangeRateException("rate field not in JSON");
+        } catch (IOException e) {
+            throw new OpenExchangeRateException(e.toString(), e);
+        }
     }
 
     public JsonNode fetchCurrencies() throws IOException, OpenExchangeRateException {
